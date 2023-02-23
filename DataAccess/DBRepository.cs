@@ -21,6 +21,8 @@ namespace DataAccess;
 
 public class DBRepository : IRepository{
 
+    Secrets secrets = new Secrets();
+
     /*
         Returns all accounts in database
     */
@@ -29,7 +31,7 @@ public class DBRepository : IRepository{
         List<Account> accounts = new();
         // Connecting to Azure server
         try{
-            using SqlConnection connection = new SqlConnection(Secrets.getConnectionString()); 
+            using SqlConnection connection = new SqlConnection(secrets.getConnectionString()); 
             
             //opening connection 
             connection.Open();
@@ -70,7 +72,7 @@ public class DBRepository : IRepository{
     public void createNewAccount(Account accountToCreate){
         try{
             //connect to database on Azure
-            using SqlConnection connection = new SqlConnection(Secrets.getConnectionString()); 
+            using SqlConnection connection = new SqlConnection(secrets.getConnectionString()); 
             connection.Open();   //open connection
             //run insert query 
             //NO SEMICOLON ON QUERY STRING!!!!!!!!
@@ -97,9 +99,8 @@ public class DBRepository : IRepository{
       */
     public Account checkExistingAccount(int id, string pwd){
         Account existingAcct = new();
-
         try{
-            using SqlConnection con = new SqlConnection(Secrets.getConnectionString());
+            using SqlConnection con = new SqlConnection(secrets.getConnectionString());
             con.Open();
             //Select * FROM EUSERS WHERE EID = 123 AND EPassword = '123857' 
             string query = "SELECT * FROM EUSERS WHERE EID = @id AND EPassword = @pwd";

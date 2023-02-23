@@ -62,43 +62,50 @@ public class MainMenu{
         Console.WriteLine("Creating Account");
         Account newAccount = new Account(); 
 
-        Console.WriteLine("Are you a Manager? [Y/N]?");
-        string? type = Console.ReadLine();
-        if(type.ToLower()[0] == 'n')
-         {
-            newAccount.workerType = 'E';
-         } else if(type.ToLower()[0] == 'y') {
-            newAccount.workerType = 'M';
-         }
-
-        Console.WriteLine("Please enter your employee ID:");
-
-        if(Int32.TryParse(Console.ReadLine(), out int WID)){
-            newAccount.workId = WID;
-        }
-
         while(true){
-            Console.WriteLine("Please enter password");
-            string? pwd = Console.ReadLine();
+            Console.WriteLine("Are you a Manager? [Y/N]?");
+            string? type = Console.ReadLine();
+            if(type.ToLower()[0] == 'n')
+            {
+                newAccount.workerType = 'E';
+            } else if(type.ToLower()[0] == 'y') {
+                newAccount.workerType = 'M';
+            }
+
+            Console.WriteLine("Please enter your employee ID:");
+
+            if(Int32.TryParse(Console.ReadLine(), out int WID)){
+                newAccount.workId = WID;
+            }
+
+            
+                Console.WriteLine("Please enter valid password");
+                string? pwd = Console.ReadLine();
+                try{
+                    newAccount.password = pwd;  //need to add password parameters in Account later
+                    break;
+                } catch (ArgumentException ex){  //add exception file later
+                    Console.WriteLine(ex.Message);
+                }
+        
+
+            //create account
             try{
-                newAccount.password = pwd;  //need to add password parameters in Account later
-                break;
-            } catch (ArgumentException ex){  //add exception file later
-                Console.WriteLine(ex.Message);
-                continue;
+                Console.WriteLine("here2");
+                if( _service.newAccount(newAccount)){
+                    Console.WriteLine("Succesfully created account.");
+                    return newAccount.workerType;
+                }
+                else {
+                    Console.WriteLine("Employee ID is already is use");
+                }
+                Console.WriteLine("here3");
+
+            }catch(Exception){
+                Console.WriteLine("Something went wrong with SQL");
             }
         }
-
-        //create account
-        try{
-            if( _service.newAccount(newAccount)){
-                Console.WriteLine("Succesfully created account.");
-                return newAccount.workerType;
-            }
-
-        }catch(Exception){
-            Console.WriteLine("Something went wrong with SQL");
-        }
+        
         
         return 'N';
     }
